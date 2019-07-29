@@ -40,6 +40,13 @@ namespace Direct.Models
         return result;
       return this.InternalID;
     }
+    public string SetStringID(string id)
+    {
+      if (this.IntegerPrimary) return string.Empty;
+      this.Snapshot.IdPropertyInfo.SetValue(this, id);
+      this.InternalID = id;
+      return id;
+    }
     public DirectDatabaseBase GetDatabase() => this.Database;
 
     ///

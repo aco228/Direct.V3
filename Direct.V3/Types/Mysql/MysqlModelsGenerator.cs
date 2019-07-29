@@ -95,6 +95,10 @@ namespace Direct.Types.Mysql
         case "tinyint":
           result = "bool";
           break;
+        case "binary":
+          result = "byte[]";
+          return result;
+          break;
       }
 
       result += (isNullable ? "?" : "");

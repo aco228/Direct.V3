@@ -21,6 +21,14 @@ namespace Direct
       return temp;
     }
 
+    public static T CreateModel<T>(this DirectDatabaseBase db, string loadID) where T : DirectModel
+    {
+      T temp = (T)Activator.CreateInstance(typeof(T), db);
+      temp.SetStringID(loadID);
+      temp.Snapshot.SetSnapshot();
+      return temp;
+    }
+
     ///
     /// LOAD BY ID (int)
     ///
@@ -60,7 +68,10 @@ namespace Direct
     {
       var data = loader.Database.LoadSingle<T>(loader.ContructLoadByStringID(id));
       if (data != null)
+      {
+        data.Snapshot.SetSnapshot();
         data.Database = loader.Database;
+      }
       return data;
     }
 
@@ -81,7 +92,10 @@ namespace Direct
     {
       var result = loader.Database.LoadSingle<T>(query);
       if (result != null)
+      {
+        result.Snapshot.SetSnapshot();
         result.Database = loader.Database;
+      }
       return result;
     }
 
@@ -100,6 +114,7 @@ namespace Direct
       List<T> result = new List<T>();
       foreach (var entry in LoadEnumerable<T>(loader))
       {
+        entry.Snapshot.SetSnapshot();
         entry.Database = loader.Database;
         result.Add(entry);
       }

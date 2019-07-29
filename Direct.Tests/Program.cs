@@ -22,6 +22,9 @@ namespace Direct.Tests
       (new MysqlModelsGenerator(db)).GenerateFile("tm_lead_history", "LeadHistory", @"D:\github\CCMonkeys\_rest\output");
       (new MysqlModelsGenerator(db)).GenerateFile("tm_prelander", "Prelander", @"D:\github\CCMonkeys\_rest\output");
       (new MysqlModelsGenerator(db)).GenerateFile("tm_prelandertype", "PrelanderType", @"D:\github\CCMonkeys\_rest\output");
+      (new MysqlModelsGenerator(db)).GenerateFile("tm_prelander_tag", "PrelanderTag", @"D:\github\CCMonkeys\_rest\output");
+      (new MysqlModelsGenerator(db)).GenerateFile("tm_prelander_tag_answer", "PrelanderTagAnswer", @"D:\github\CCMonkeys\_rest\output");
+      (new MysqlModelsGenerator(db)).GenerateFile("tm_prelander_action_interaction", "PrelanderTagActionInteraction", @"D:\github\CCMonkeys\_rest\output");
       (new MysqlModelsGenerator(db)).GenerateFile("tm_provider", "Provider", @"D:\github\CCMonkeys\_rest\output");
       (new MysqlModelsGenerator(db)).GenerateFile("tm_session", "Session", @"D:\github\CCMonkeys\_rest\output");
       (new MysqlModelsGenerator(db)).GenerateFile("tm_session_data", "SessionData", @"D:\github\CCMonkeys\_rest\output");

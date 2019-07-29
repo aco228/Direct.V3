@@ -18,7 +18,10 @@ namespace Direct
 
       var data = await loader.Database.LoadSingleAsync<T>(command);
       if(data != null)
+      {
+        data.Snapshot.SetSnapshot();
         data.Database = loader.Database;
+      }
       return data;
     }
 
@@ -31,7 +34,10 @@ namespace Direct
 
       var data = await loader.Database.LoadSingleAsync<T>(command);
       if(data != null)
+      {
+        data.Snapshot.SetSnapshot();
         data.Database = loader.Database;
+      }
       return data;
     }
 
@@ -39,7 +45,10 @@ namespace Direct
     {
       var data = await loader.Database.LoadSingleAsync<T>(query); ;
       if (data != null)
+      {
+        data.Snapshot.SetSnapshot();
         data.Database = loader.Database;
+      }
       return data;
     }
 
@@ -51,11 +60,10 @@ namespace Direct
         loader.WhereQuery,
         loader.Additional);
 
-      
-
       List<T> result = new List<T>();
       foreach (var row in await loader.Database.LoadAsync<T>(command))
       {
+        row.Snapshot.SetSnapshot();
         row.Database = loader.Database;
         result.Add(row);
       }
@@ -72,7 +80,10 @@ namespace Direct
 
       var data = await loader.Database.LoadSingleAsync<T>(command);
       if(data != null)
+      {
+        data.Snapshot.SetSnapshot();
         data.Database = loader.Database;
+      }
       return data;
     }
 
