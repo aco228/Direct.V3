@@ -165,8 +165,9 @@ namespace Direct
       }
       catch(Exception e)
       {
-        this.Database.OnException(DirectDatabaseExceptionType.OnLoad, command, e);
-        return new DirectLoadResult(e);
+        //this.Database.OnException(DirectDatabaseExceptionType.OnLoad, command, e);
+        //return new DirectLoadResult(e);
+        throw e;
       }
     }
 
@@ -190,8 +191,9 @@ namespace Direct
       }
       catch (Exception e)
       {
-        this.Database.OnException(DirectDatabaseExceptionType.OnLoad, command, e);
-        return new DirectLoadResult(e);
+        //this.Database.OnException(DirectDatabaseExceptionType.OnLoad, command, e);
+        //return new DirectLoadResult(e);
+        throw e;
       }
     }
 
@@ -224,8 +226,9 @@ namespace Direct
       }
       catch (Exception e)
       {
-        this.Database.OnException(DirectDatabaseExceptionType.OnLoad, command, e);
-        return new DirectExecuteResult() { Exception = e };
+        //this.Database.OnException(DirectDatabaseExceptionType.OnLoad, command, e);
+        //return new DirectExecuteResult() { Exception = e };
+        throw e;
       }
     }
 
@@ -259,8 +262,9 @@ namespace Direct
       }
       catch (Exception e)
       {
-        this.Database.OnException(DirectDatabaseExceptionType.OnLoad, command, e);
-        return new DirectExecuteResult() { Exception = e };
+        //this.Database.OnException(DirectDatabaseExceptionType.OnLoad, command, e);
+        //return new DirectExecuteResult() { Exception = e };
+        throw e;
       }
     }
 
