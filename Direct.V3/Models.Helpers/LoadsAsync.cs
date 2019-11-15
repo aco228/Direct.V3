@@ -71,6 +71,12 @@ namespace Direct
       return result;
     }
 
+    /// <summary>
+    /// Load single DirectModel async
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="loader"></param>
+    /// <returns></returns>
     public static async Task<T> LoadSingleAsync<T>(this DirectQueryLoader<T> loader) where T : DirectModel
     {
       string command = string.Format("SELECT {0} FROM [].{1} {2} LIMIT 1",
@@ -86,6 +92,25 @@ namespace Direct
       }
       return data;
     }
+
+
+    /// <summary>
+    /// Loads dynamic object (values not selected will not be present)
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="loader"></param>
+    /// <returns></returns>
+    public static async Task<dynamic> LoadDynamicAsync<T>(this DirectQueryLoader<T> loader) where T : DirectModel
+    {
+      string command = string.Format("SELECT {0} FROM [].{1} {2} {3}",
+        loader.SelectQuery,
+        loader.Instance.TableName,
+        loader.WhereQuery,
+        loader.Additional);
+
+      return (await loader.Database.LoadAsync(command)).RawData;
+    }
+
 
   }
 }

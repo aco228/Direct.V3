@@ -73,6 +73,7 @@ namespace Direct.Types.Mysql
       string result = "";
       switch (type)
       {
+        case "smallint":
         case "int":
           result = "int";
           break;

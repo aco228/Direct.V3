@@ -44,7 +44,7 @@ namespace Direct
         model.GetIdNameValue(), 
         (model.IntegerPrimary ? model.ID.Value.ToString() : string.Format("'{0}'", model.GetStringID())));
 
-      DirectExecuteResult result = await db.ExecuteAsync(command);
+       DirectExecuteResult result = await db.ExecuteAsync(command);
       if (!result.IsSuccessfull)
         return null;
       else

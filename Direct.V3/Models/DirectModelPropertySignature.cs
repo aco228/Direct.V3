@@ -8,6 +8,7 @@ namespace Direct.Models
 
   internal class DirectModelPropertySignature
   {
+    public PropertyInfo PropertyInfo { get; protected set; } = null;
     public string AttributeName { get; set; } = string.Empty;
     public string PropertyName { get; set; } = string.Empty;
 
@@ -15,11 +16,14 @@ namespace Direct.Models
     public bool UpdateDateTime = true;
     public bool IsPrimary { get; set; } = false;
     public bool Nullable = false;
+
+
     public bool NotUpdatable = false;
     public bool HasDefaultValue = false;
 
     public DirectModelPropertySignature(PropertyInfo info)
     {
+      this.PropertyInfo = info;
       this.PropertyName = info.Name;
 
       Object[] attributes = info.GetCustomAttributes(typeof(DColumn), true);

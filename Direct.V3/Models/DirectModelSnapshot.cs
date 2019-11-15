@@ -66,6 +66,22 @@ namespace Direct.Models
       return null;
     }
 
+    /// <summary>
+    /// Update Property value
+    /// </summary>
+    /// <param name="propertyName">Name of the propery</param>
+    /// <param name="value">New value</param>
+    /// <returns>If property does not exists, return false, else true</returns>
+    internal bool UpdatePropertyValue(string propertyName, object value)
+    {
+      PropertyInfo pi = this.GetProperty(propertyName);
+      if (pi == null)
+        return false;
+
+      pi.SetValue(this.Model, value);
+      return true;
+    }
+
     ///
     /// Main manipulation
     ///

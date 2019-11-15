@@ -9,10 +9,17 @@ namespace Direct
   public static partial class DirectModelHelper
   {
 
-    ///
-    /// CREATE MODEL
-    ///
+    //
+    // CREATE MODEL
+    //
 
+    /// <summary>
+    /// Create single empty instance (dummy object) of selected type, with predefined ID
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="db"></param>
+    /// <param name="loadID">ID</param>
+    /// <returns></returns>
     public static T CreateModel<T>(this DirectDatabaseBase db, int loadID) where T : DirectModel
     {
       T temp = (T)Activator.CreateInstance(typeof(T), db);
@@ -21,6 +28,13 @@ namespace Direct
       return temp;
     }
 
+    /// <summary>
+    /// Create single empty instance (dummy object) of selected type, with predefined ID
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="db"></param>
+    /// <param name="loadID">ID</param>
+    /// <returns></returns>
     public static T CreateModel<T>(this DirectDatabaseBase db, string loadID) where T : DirectModel
     {
       T temp = (T)Activator.CreateInstance(typeof(T), db);
@@ -29,9 +43,9 @@ namespace Direct
       return temp;
     }
 
-    ///
-    /// LOAD BY ID (int)
-    ///
+    //
+    // LOAD BY ID (int)
+    //
 
     internal static string ContructLoadByID<T>(this DirectQueryLoader<T> loader, long id) where T : DirectModel
     {
@@ -52,9 +66,25 @@ namespace Direct
       return data;
     }
 
-    ///
-    /// LOAD BY ID (string)
-    ///
+    public static T LoadSingle<T>(this DirectQueryLoader<T> loader) where T : DirectModel
+    {
+      string command = string.Format("SELECT {0} FROM [].{1} {2} LIMIT 1",
+        loader.SelectQuery,
+        loader.Instance.TableName,
+        loader.WhereQuery);
+
+      var data = loader.Database.LoadSingle<T>(command);
+      if (data != null)
+      {
+        data.Snapshot.SetSnapshot();
+        data.Database = loader.Database;
+      }
+      return data;
+    }
+
+    //
+    // LOAD BY ID (string)
+    //
 
     internal static string ContructLoadByStringID<T>(this DirectQueryLoader<T> loader, string id) where T : DirectModel
     {
@@ -63,7 +93,7 @@ namespace Direct
         loader.Instance.GetTableName(),
         loader.Instance.GetIdNameValue(), id);
     }
-    
+
     public static T LoadByGuid<T>(this DirectQueryLoader<T> loader, string id) where T : DirectModel
     {
       var data = loader.Database.LoadSingle<T>(loader.ContructLoadByStringID(id));
@@ -75,9 +105,9 @@ namespace Direct
       return data;
     }
 
-    ///
-    /// LOAD BY WHERE
-    ///
+    //
+    // LOAD BY WHERE
+    //
 
     internal static string ContructLoad<T>(this DirectQueryLoader<T> loader) where T : DirectModel
     {
