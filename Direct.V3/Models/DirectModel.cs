@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Direct.Models
 {
+  [Serializable()]
   public abstract class DirectModel : IDisposable
   {
     internal string InternalID { get; private set; } = string.Empty;

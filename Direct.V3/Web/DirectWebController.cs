@@ -24,7 +24,7 @@ namespace Direct.Web
     //  SELECT
     //
 
-    public abstract bool HasPrivilegesForSelect();
+    protected abstract bool HasPrivilegesForSelect();
 
     /// <summary>
     /// Return single item from database based on ID
@@ -32,9 +32,9 @@ namespace Direct.Web
     /// <param name="id">numeric or string id of the element</param>
     /// <returns></returns>
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetSingle(string id)
+    public virtual async Task<IActionResult> GetSingle(string id)
     {
-      if (this.HasPrivilegesForSelect())
+      if (!this.HasPrivilegesForSelect())
         return this.ReturnErrorMessage("Not enough Privileges");
 
       // In case that we are hitting get all 
@@ -44,6 +44,7 @@ namespace Direct.Web
       return this.Ok(await Database.Query<T>().Where("[id]={0}", id).LoadAsync());
     }
 
+
     /// <summary>
     /// Returns all from database
     /// </summary>
@@ -52,11 +53,11 @@ namespace Direct.Web
     /// <returns></returns>
     [HttpGet("")]
     [HttpGet("{values}/{limit}")]
-    public async Task<IActionResult> Select(string values = "*", int limit = 500)
+    public virtual async Task<IActionResult> Select(string values = "*", int limit = 500)
     {
       try
       {
-        if (this.HasPrivilegesForSelect())
+        if (!this.HasPrivilegesForSelect())
           return this.ReturnErrorMessage("Not enough Privileges");
 
         string whereParamsFromQuery = HttpUtility.UrlDecode(this.Request.QueryString.ToString().Replace("?", string.Empty).Replace("&", " AND ").Split(';')[0]);
@@ -78,15 +79,16 @@ namespace Direct.Web
     //  UPDATE
     //
 
-    public abstract bool HasPrivilegesForUpdate();
+    protected abstract bool HasPrivilegesForUpdate();
+    protected virtual void OnAfterUpdate(T entry) { }
 
     [HttpPost("{id}")]
     [HttpPatch("{id}")]
-    public async Task<IActionResult> Update(string id)
+    public virtual async Task<IActionResult> Update(string id)
     {
       try
       {
-        if (this.HasPrivilegesForUpdate())
+        if (!this.HasPrivilegesForUpdate())
           return this.ReturnErrorMessage("Not enough Privileges");
 
         JObject postData = await this.Request.GetPostData();
@@ -110,6 +112,8 @@ namespace Direct.Web
           snap.UpdateValue(existingValue, val);
         }
 
+        this.OnAfterUpdate(existingValue);
+
         return this.Ok(new DirectWebControllerResponseUpdate()
         {
           AffectedRows = await this.Database.UpdateAsync(existingValue)
@@ -125,14 +129,15 @@ namespace Direct.Web
     // INSERT 
     //
 
-    public abstract bool HasPrivilegesForInsert();
+    protected abstract bool HasPrivilegesForInsert();
+    protected virtual void OnAfterInsert(T entry) { }
 
     [HttpPut("")]
-    public async Task<IActionResult> Insert()
+    public virtual async Task<IActionResult> Insert()
     {
       try
       {
-        if (this.HasPrivilegesForInsert())
+        if (this.HasPrivilegesForInsert() == false)
           return this.ReturnErrorMessage("Not enough Privileges");
 
         JObject postData = await this.Request.GetPostData();
@@ -161,6 +166,8 @@ namespace Direct.Web
         }
 
         dummy = await this.Database.InsertAsync<T>(dummy);
+        this.OnAfterInsert(dummy);
+
         return this.Ok(dummy);
       }
       catch(Exception e)
