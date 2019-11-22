@@ -20,12 +20,13 @@ namespace Direct
       this.Where = this.Database.Construct(where, parameters);
     }
 
-    public void AddWhere(string pattern, params object[] parameters)
+    public DirectQueryLoader<T> AddWhere(string pattern, params object[] parameters)
     {
       if (this.constructWhereParameters == null)
         this.constructWhereParameters = new List<string>();
 
       this.constructWhereParameters.Add(this.Database.Construct(pattern, parameters));
+      return this;
     }
     public string WhereQuery
     {

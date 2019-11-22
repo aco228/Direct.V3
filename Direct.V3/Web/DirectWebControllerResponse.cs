@@ -17,6 +17,11 @@ namespace Direct.Web
     public int? AffectedRows { get; set; } = null;
   }
 
+  internal sealed class DirectWebControllerResponseDelete
+  {
+    public bool IsDeleted { get; set; } = true;
+  }
+
   internal sealed class DirectWebControllerResponseInsert
   {
     public bool Status { get; set; } = true;

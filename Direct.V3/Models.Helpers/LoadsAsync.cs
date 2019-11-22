@@ -9,6 +9,17 @@ namespace Direct
   public static partial class DirectModelHelper
   {
 
+    public static async IAsyncEnumerable<T> LoadEnumerableAsync<T>(this DirectQueryLoader<T> loader) where T : DirectModel
+    {
+      await foreach (var row in loader.Database.Loader.LoadEnumerableAsync<T>(loader.ContructLoad()))
+      {
+        row.Database = loader.Database;
+        yield return row;
+      }
+      yield break;
+    }
+
+
     public static async Task<T> LoadAsync<T>(this DirectQueryLoader<T> loader, int id) where T : DirectModel
     {
       string command = string.Format("SELECT {0} FROM [].{1} WHERE {2}={3};",

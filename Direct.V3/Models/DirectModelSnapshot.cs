@@ -60,6 +60,9 @@ namespace Direct.Models
 
     internal PropertyInfo GetProperty(string propertyName)
     {
+      if (propertyName.ToLower().Equals("id"))
+        return this.IdPropertyInfo;
+
       for (int i = 0; i < this.PropertySignatures.Count; i++)
         if (this.PropertySignatures[i].Name.Equals(propertyName))
           return this.Properties[i];

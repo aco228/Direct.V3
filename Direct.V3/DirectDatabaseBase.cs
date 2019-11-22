@@ -70,6 +70,11 @@ namespace Direct
     public IEnumerable<DirectContainerRow> LoadEnumerable(DbConnection connection, string command, params object[] parameters) => this.Loader.LoadEnumerable(connection, command, parameters);
     public IEnumerable<DirectContainerRow> LoadEnumerable(DbConnection connection, string command) => this.Loader.LoadEnumerable(connection, command);
 
+    public IAsyncEnumerable<DirectContainerRow> LoadEnumerableAsync(string command, params object[] parameters) => this.Loader.LoadEnumerableAsync(command, parameters);
+    public IAsyncEnumerable<DirectContainerRow> LoadEnumerableAsync(string command) => this.Loader.LoadEnumerableAsync(command);
+    public IAsyncEnumerable<DirectContainerRow> LoadEnumerableAsync(DbConnection connection, string command, params object[] parameters) => this.Loader.LoadEnumerableAsync(connection, command, parameters);
+    public IAsyncEnumerable<DirectContainerRow> LoadEnumerableAsync(DbConnection connection, string command) => this.Loader.LoadEnumerableAsync(connection, command);
+
     public DirectLoadResult Load(string query, params object[] parameters) => this.Loader.Load(query, parameters);
     public DirectLoadResult Load(string command) => this.Loader.Load(command);
     public DirectLoadResult Load(DbConnection connection, string query, params object[] parameters) => this.Loader.Load(connection, query, parameters);

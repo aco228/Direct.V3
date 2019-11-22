@@ -3,8 +3,25 @@ using System.Reflection;
 
 namespace Direct.Helpers
 {
-  internal static class DirectCastHelper
+  public static class DirectCastHelper
   {
+
+    public static object ChangeType(object value, Type conversion)
+    {
+      var t = conversion;
+
+      if (t.IsGenericType && t.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+      {
+        if (value == null)
+        {
+          return null;
+        }
+
+        t = Nullable.GetUnderlyingType(t);
+      }
+
+      return Convert.ChangeType(value, t);
+    }
 
     public static void ConvertProperty<T>(T temp, PropertyInfo property, string value)
     {

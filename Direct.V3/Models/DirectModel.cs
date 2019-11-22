@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -48,6 +49,7 @@ namespace Direct.Models
       this.InternalID = id;
       return id;
     }
+    public PropertyInfo GetProperty(string propertyName) => this.Snapshot.GetProperty(propertyName);
     public DirectDatabaseBase GetDatabase() => this.Database;
 
     ///
@@ -106,7 +108,6 @@ namespace Direct.Models
 
       return this.ID;
     }
-
     public int WaitIDExplicit(int forSeconds = 30)
     {
       int? id = this.WaitID(30);
@@ -121,6 +122,7 @@ namespace Direct.Models
 
     internal Action OnAfterInsert = null;
     internal Action OnAfterUpdate = null;
+    internal Action OnAfterDelete = null;
 
     public void SetOnAfterInsert(Action action) => this.OnAfterInsert = action;
     public void SetOnAfterUpdate(Action action) => this.OnAfterUpdate = action;
@@ -184,9 +186,8 @@ namespace Direct.Models
     /// 
 
     public bool Delete(DirectDatabaseBase db = null) => this.GetDatabase(db).Delete(this);
-
-
-
+    public async Task<bool> DeleteAsync(DirectDatabaseBase db = null) => await this.GetDatabase(db).DeleteAsync(this);
+    
 
   }
 }

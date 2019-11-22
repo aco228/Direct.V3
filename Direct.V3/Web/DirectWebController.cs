@@ -17,7 +17,7 @@ namespace Direct.Web
 
     public abstract DirectDatabaseBase Database { get; }
 
-    internal IActionResult ReturnErrorMessage(string message, Exception e = null)
+    protected IActionResult ReturnErrorMessage(string message, Exception e = null)
       => this.BadRequest(new DirectWebControllerResponse() { Message = message, Status = false, Exception = e });
 
     //
@@ -32,6 +32,7 @@ namespace Direct.Web
     /// <param name="id">numeric or string id of the element</param>
     /// <returns></returns>
     [HttpGet("{id}")]
+    [Produces("application/json")]
     public virtual async Task<IActionResult> GetSingle(string id)
     {
       if (!this.HasPrivilegesForSelect())
@@ -53,6 +54,7 @@ namespace Direct.Web
     /// <returns></returns>
     [HttpGet("")]
     [HttpGet("{values}/{limit}")]
+    [Produces("application/json")]
     public virtual async Task<IActionResult> Select(string values = "*", int limit = 500)
     {
       try
@@ -84,6 +86,7 @@ namespace Direct.Web
 
     [HttpPost("{id}")]
     [HttpPatch("{id}")]
+    [Produces("application/json")]
     public virtual async Task<IActionResult> Update(string id)
     {
       try
@@ -133,6 +136,7 @@ namespace Direct.Web
     protected virtual void OnAfterInsert(T entry) { }
 
     [HttpPut("")]
+    [Produces("application/json")]
     public virtual async Task<IActionResult> Insert()
     {
       try
@@ -176,6 +180,42 @@ namespace Direct.Web
       }
     }
 
+
+    //
+    // DELETE
+    //
+
+    protected abstract bool HasPrivilegesForDelete();
+    protected virtual void OnAfterDelete(T entry, bool isDeleted) { }
+
+    [HttpDelete("{id}")]
+    [Produces("application/json")]
+    public virtual async Task<IActionResult> Delete(string id)
+    {
+      try
+      {
+
+        if (this.HasPrivilegesForDelete() == false)
+          return this.ReturnErrorMessage("Not enough Privileges");
+
+
+        T existingValue = await Database.Query<T>().Where("[id]={0}", id).LoadSingleAsync();
+        if (existingValue == null)
+          return this.ReturnErrorMessage("No entry with id " + id);
+
+        bool isDeleted = await existingValue.DeleteAsync(this.Database);
+        this.OnAfterDelete(existingValue, isDeleted);
+
+        return this.Ok(new DirectWebControllerResponseDelete()
+        {
+          IsDeleted = isDeleted
+        });
+      }
+      catch (Exception e)
+      {
+        return this.ReturnErrorMessage("", e);
+      }
+    }
 
   }
 }

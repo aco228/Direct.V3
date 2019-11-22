@@ -126,6 +126,26 @@ namespace Direct
       yield break;
     }
 
+
+    ///
+    /// LoadEnumerable (DirectContainerRow) ASYNC
+    ///
+
+    public virtual IAsyncEnumerable<DirectContainerRow> LoadEnumerableAsync(string command, params object[] parameters) =>  this.LoadEnumerableAsync(this.Database.Construct(command, parameters));
+    public IAsyncEnumerable<DirectContainerRow> LoadEnumerableAsync(string command)
+    {
+      using (var connection = this.Database.GetConnection())
+        return LoadEnumerableAsync(connection, command);
+    }
+    public virtual IAsyncEnumerable<DirectContainerRow> LoadEnumerableAsync(DbConnection connection, string command, params object[] parameters) => this.LoadEnumerableAsync(connection, this.Database.Construct(command, parameters));
+    public async IAsyncEnumerable<DirectContainerRow> LoadEnumerableAsync(DbConnection connection, string command)
+    {
+      command = this.Database.PrepareQuery(command);
+      foreach (dynamic row in await connection.QueryAsync(command))
+        yield return new DirectContainerRow(row);
+      yield break;
+    }
+
     ///
     /// LoadEnumerable (T)
     ///
@@ -141,6 +161,25 @@ namespace Direct
     {
       command = this.Database.PrepareQuery(command);
       foreach (var row in connection.Query<T>(command))
+        yield return row;
+      yield break;
+    }
+
+    ///
+    /// LoadEnumerable (T) ASYNC
+    ///
+
+    public virtual IAsyncEnumerable<T> LoadEnumerableAsync<T>(string command, params object[] parameters) => this.LoadEnumerableAsync<T>(this.Database.Construct(command, parameters));
+    public IAsyncEnumerable<T> LoadEnumerableAsync<T>(string command)
+    {
+      using (var connection = this.Database.GetConnection())
+        return LoadEnumerableAsync<T>(connection, command);
+    }
+    public virtual IAsyncEnumerable<T> LoadEnumerableAsync<T>(DbConnection connection, string command, params object[] parameters) => this.LoadEnumerableAsync<T>(connection, this.Database.Construct(command, parameters));
+    public async IAsyncEnumerable<T> LoadEnumerableAsync<T>(DbConnection connection, string command)
+    {
+      command = this.Database.PrepareQuery(command);
+      foreach (var row in await connection.QueryAsync<T>(command))
         yield return row;
       yield break;
     }
