@@ -51,6 +51,7 @@ namespace Direct.Models
     }
     public PropertyInfo GetProperty(string propertyName) => this.Snapshot.GetProperty(propertyName);
     public DirectDatabaseBase GetDatabase() => this.Database;
+    public void SetDatabase(DirectDatabaseBase db) => this.Database = db;
 
     ///
     /// CONSTRUCTOR && DECONSTRUCTOR
