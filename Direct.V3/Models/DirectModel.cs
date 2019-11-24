@@ -52,6 +52,10 @@ namespace Direct.Models
     public PropertyInfo GetProperty(string propertyName) => this.Snapshot.GetProperty(propertyName);
     public DirectDatabaseBase GetDatabase() => this.Database;
     public void SetDatabase(DirectDatabaseBase db) => this.Database = db;
+    public bool HasChanges()
+    {
+      return this.Snapshot.GetAffected().Count > 0;
+    }
 
     ///
     /// CONSTRUCTOR && DECONSTRUCTOR
@@ -180,7 +184,7 @@ namespace Direct.Models
       this.OnAfterUpdate?.Invoke();
       this.GetDatabase().TransactionalManager.Add(this);
     }
-    public async Task UpdateAsync(DirectDatabaseBase db = null) => await this.GetDatabase(db).UpdateAsync(this);
+    public async Task<int?> UpdateAsync(DirectDatabaseBase db = null) => await this.GetDatabase(db).UpdateAsync(this);
 
     /// 
     /// DELETE

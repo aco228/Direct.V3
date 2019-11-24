@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Direct.Models
 {
-
+  [Serializable()]
   internal class DirectModelPropertySignature
   {
     public PropertyInfo PropertyInfo { get; protected set; } = null;

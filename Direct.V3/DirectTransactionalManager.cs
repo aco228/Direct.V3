@@ -59,7 +59,7 @@ namespace Direct
     {
       lock (LockObj)
       {
-        if (!this._queryInserter.Contains(model))
+        if (!this._queryInserter.Contains(model) && !this._queryModels.Contains(model))
           this._queryInserter.Add(model);
 
         if (this.Count >= this.Limit)

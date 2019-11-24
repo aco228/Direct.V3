@@ -53,7 +53,7 @@ namespace Direct
         command = this.Database.PrepareQuery(command);
         return await connection.QueryAsync<T>(command);
       }
-      catch
+      catch(Exception e)
       {
         return null;
       }

@@ -6,6 +6,7 @@ using System.Text;
 
 namespace Direct.Models
 {
+  [Serializable()]
   public class DirectModelSnapshot
   {
     private static List<string> IgnoredPropertyNames = new List<string>() { "ID", "OnAfterInsert", "OnAfterUpdate" };
