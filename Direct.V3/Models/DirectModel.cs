@@ -87,7 +87,7 @@ namespace Direct.Models
       string[] split = (from s in this.TableName.Split('_') where s.Length > 2 select s).ToArray();
       if (split.Length == 1)
         return split[0].Substring(0, 3).ToUpper();
-      else 
+      else
         return split[0].Substring(0, 1).ToUpper() + split[1].Substring(0, 2).ToUpper();
     }
 
@@ -125,12 +125,13 @@ namespace Direct.Models
     /// Overrides
     ///
 
-    internal Action OnAfterInsert = null;
-    internal Action OnAfterUpdate = null;
-    internal Action OnAfterDelete = null;
+    internal List<Action<DirectModel>> OnAfterInsertActions = new List<Action<DirectModel>>();
+    internal List<Action<DirectModel>> OnAfterUpdateActions = new List<Action<DirectModel>>();
+    internal List<Action<DirectModel>> OnAfterDeleteActions = new List<Action<DirectModel>>();
 
-    public void SetOnAfterInsert(Action action) => this.OnAfterInsert = action;
-    public void SetOnAfterUpdate(Action action) => this.OnAfterUpdate = action;
+    public void AddOnAfterInsert(Action<DirectModel> action) => this.OnAfterInsertActions.Add(action);
+    public void AddOnAfterUpdate(Action<DirectModel> action) => this.OnAfterUpdateActions.Add(action);
+    public void AddOnAfterDelete(Action<DirectModel> action) => this.OnAfterDeleteActions.Add(action);
 
     public virtual void OnBeforeInsert() { }
     public virtual void OnBeforeUpdate() { }
@@ -159,15 +160,37 @@ namespace Direct.Models
     /// INSERT
     /// 
 
-    public void Insert(DirectDatabaseBase db = null) => this.GetDatabase(db).Insert<DirectModel>(this);
-    public T Insert<T>(DirectDatabaseBase db = null) where T : DirectModel => this.GetDatabase(db).Insert<T>(this);
+    public void Insert(DirectDatabaseBase db = null)
+    {
+      foreach (var action in OnAfterInsertActions)
+        action?.Invoke(this);
+      this.GetDatabase(db).Insert<DirectModel>(this);
+    }
+    public T Insert<T>(DirectDatabaseBase db = null) where T : DirectModel
+    {
+      foreach (var action in OnAfterInsertActions)
+        action?.Invoke(this);
+      return this.GetDatabase(db).Insert<T>(this);
+    }
 
-    public Task InsertAsync(DirectDatabaseBase db = null) => this.GetDatabase(db).InsertAsync<DirectModel>(this);
-    public Task<T> InsertAsync<T>(DirectDatabaseBase db = null) where T : DirectModel => this.GetDatabase(db).InsertAsync<T>(this);
+    public Task InsertAsync(DirectDatabaseBase db = null)
+    {
+      foreach (var action in OnAfterInsertActions)
+        action?.Invoke(this);
+      return this.GetDatabase(db).InsertAsync<DirectModel>(this);
+    }
+    public Task<T> InsertAsync<T>(DirectDatabaseBase db = null) where T : DirectModel
+    {
+      foreach (var action in OnAfterInsertActions)
+        action?.Invoke(this);
+
+      return this.GetDatabase(db).InsertAsync<T>(this);
+    }
 
     public void InsertLater(DirectDatabaseBase db = null)
     {
-      this.OnAfterInsert?.Invoke();
+      foreach (var action in OnAfterInsertActions)
+        action?.Invoke(this);
       this.GetDatabase(db).TransactionalManager.Insert(this);
     }
     public void InsertOrUpdate(DirectDatabaseBase db = null) => this.GetDatabase(db).InsertOrUpdate(this);
@@ -178,21 +201,49 @@ namespace Direct.Models
     /// UPDATE
     /// 
 
-    public void Update(DirectDatabaseBase db = null) => this.GetDatabase(db).Update(this);
+    public void Update(DirectDatabaseBase db = null)
+    {
+      foreach (var action in OnAfterUpdateActions)
+        action?.Invoke(this);
+
+      this.GetDatabase(db).Update(this);
+    }
     public void UpdateLater()
     {
-      this.OnAfterUpdate?.Invoke();
+      foreach (var action in OnAfterUpdateActions)
+        action?.Invoke(this);
+
       this.GetDatabase().TransactionalManager.Add(this);
     }
-    public async Task<int?> UpdateAsync(DirectDatabaseBase db = null) => await this.GetDatabase(db).UpdateAsync(this);
+    public async Task<int?> UpdateAsync(DirectDatabaseBase db = null)
+    {
+      foreach (var action in OnAfterUpdateActions)
+        action?.Invoke(this);
+
+      return await this.GetDatabase(db).UpdateAsync(this);
+    }
 
     /// 
     /// DELETE
     /// 
 
-    public bool Delete(DirectDatabaseBase db = null) => this.GetDatabase(db).Delete(this);
-    public async Task<bool> DeleteAsync(DirectDatabaseBase db = null) => await this.GetDatabase(db).DeleteAsync(this);
-    
+    public bool Delete(DirectDatabaseBase db = null)
+    {
+      var result = this.GetDatabase(db).Delete(this);
+      if (result)
+        foreach (var action in OnAfterUpdateActions)
+          action?.Invoke(this);
+      return result;
+    }
+    public async Task<bool> DeleteAsync(DirectDatabaseBase db = null)
+    {
+      var result = await this.GetDatabase(db).DeleteAsync(this);
+      if (result)
+        foreach (var action in OnAfterUpdateActions)
+          action?.Invoke(this);
+      return result;
+    }
+
 
   }
 }

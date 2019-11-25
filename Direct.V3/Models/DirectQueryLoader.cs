@@ -22,6 +22,10 @@ namespace Direct
 
     public DirectQueryLoader<T> AddWhere(string pattern, params object[] parameters)
     {
+      if (pattern.Contains("[id]"))
+        using (var tempValue = (T)Activator.CreateInstance(typeof(T), (DirectDatabaseBase)null))
+          pattern = pattern.Replace("[id]", tempValue.IdName);
+
       if (this.constructWhereParameters == null)
         this.constructWhereParameters = new List<string>();
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Direct
 {
-  public enum DirectDatabaseExceptionType { OnLoad, OnLoadAsync, OnExecute, OnExecuteAsync }
+  public enum DirectDatabaseExceptionType { OnEnumerable, OnLoad, OnLoadAsync, OnExecute, OnExecuteAsync }
   public abstract partial class DirectDatabaseBase : IDisposable
   {
     public string DatabaseName { get; protected set; } = string.Empty;
