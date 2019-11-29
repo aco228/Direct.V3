@@ -127,7 +127,14 @@ namespace Direct
 
     public virtual string ConstructDatabaseNameAndScheme(string query)
     {
-      query = query.Trim().Replace("[].", string.Format("{0}.{1}", this.DatabaseName, this.DatabaseSchemeString));
+      query = query.Trim()
+        .Replace("[].", string.Format("{0}.{1}", this.DatabaseName, this.DatabaseSchemeString))
+        .Replace("'[today]'", this.ConstructDateTimeParam(DateTime.Today))
+        .Replace("'[tomorrow]'", this.ConstructDateTimeParam((DateTime.Today.AddDays(1))))
+        .Replace("'[bweek]'", this.ConstructDateTimeParam((DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday))))
+        .Replace("'[eweek]'", this.ConstructDateTimeParam(DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek)))
+        .Replace("'[bmonth]'", this.ConstructDateTimeParam(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)))
+        .Replace("'[emonth]'", this.ConstructDateTimeParam(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))));
       return query;
     }
 
