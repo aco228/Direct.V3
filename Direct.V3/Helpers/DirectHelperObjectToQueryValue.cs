@@ -30,7 +30,11 @@ namespace Direct
         return "NULL";
 
       if (signature.UpdateDateTime)
-        return db.CurrentDateQueryString;
+        if(db != null)
+          return db.CurrentDateQueryString;
+        else
+          return "CURRENT_TIMESTAMP";
+
 
       object value = obj.GetValue(parentObject);
       var type = obj.PropertyType;
@@ -58,11 +62,17 @@ namespace Direct
         data.ToList().ForEach(b => hex += b.ToString("x2"));
         return string.Format("X'{0}'", hex);
       }
-      else if (type == typeof(DateTime))
+      else if (type == typeof(DateTime) || type == typeof(DateTime?))
       {
+        if(value == null)
+          return "NULL";
+
         DateTime? dt = value as DateTime?;
         if (dt != null)
-          return db.ConstructDateTimeParam(dt.Value);
+          if (db != null)
+            return db.ConstructDateTimeParam(dt.Value);
+          else
+            return string.Format("'{0}'", dt.Value.ToString("yyyy-MM-dd HH:mm:ss"));
         else
           return "NULL";
       }
