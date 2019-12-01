@@ -52,6 +52,7 @@ namespace Direct.Models
     public PropertyInfo GetProperty(string propertyName) => this.Snapshot.GetProperty(propertyName);
     public DirectDatabaseBase GetDatabase() => this.Database;
     public void SetDatabase(DirectDatabaseBase db) => this.Database = db;
+    public string GetInternalID() => this.InternalID;
     public bool HasChanges()
     {
       return this.Snapshot.GetAffected().Count > 0;
@@ -82,7 +83,7 @@ namespace Direct.Models
         this.Database.Dispose();
     }
 
-    private string ConstructSignature()
+    protected string ConstructSignature()
     {
       string[] split = (from s in this.TableName.Split('_') where s.Length > 2 select s).ToArray();
       if (split.Length == 1)
