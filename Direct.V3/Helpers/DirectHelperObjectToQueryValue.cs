@@ -19,8 +19,9 @@ namespace Direct
       if (input.Length >= 1 && input[input.Length - 1] == '\\')
         input = input.Substring(0, input.Length - 1);
 
-      return System.Security.SecurityElement.Escape(input.ToString()
-        .Replace("'", string.Empty));
+      //return System.Security.SecurityElement.Escape(input.ToString()
+      //  .Replace("'", string.Empty));
+      return input.ToString().Replace("'", string.Empty);
     }
 
 
