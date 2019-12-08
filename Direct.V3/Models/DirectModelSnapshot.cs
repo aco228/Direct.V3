@@ -240,7 +240,7 @@ namespace Direct.Models
           propertiesChanged.Add(i);
       }
 
-      return propertiesChanged.Count == 0 ? null : propertiesChanged;
+      return propertiesChanged;
     }
 
 

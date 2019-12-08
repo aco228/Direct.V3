@@ -107,10 +107,10 @@ namespace Direct
         GC.Collect();
       }
 
+      string mainQuery = "";
       try
       {
         this.IsRunExecuting = true;
-        string mainQuery = "";
 
         foreach (string query in queries)
         {

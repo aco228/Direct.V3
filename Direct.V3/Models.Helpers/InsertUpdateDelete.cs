@@ -52,11 +52,41 @@ namespace Direct
 
       model.OnBeforeUpdate();
 
+      string updateData = model.Snapshot.GetUpdateData();
+      if (string.IsNullOrEmpty(updateData))
+        return string.Empty;
+
       // UPDATE MobilePaywall.core.A SET A=1 WHERE AID=1
       string command = string.Format("UPDATE {0}.{1}{2} SET {3} WHERE {4}={5};",
         model.GetDatabase().DatabaseName, model.GetDatabase().DatabaseSchemeString, model.GetTableName(),
         model.Snapshot.GetUpdateData(),
-        model.GetIdNameValue(), 
+        model.GetIdNameValue(),
+        (model.IntegerPrimary ? model.ID.Value.ToString() : string.Format("'{0}'", model.GetStringID())));
+
+      return command;
+    }
+
+    internal static string ConstructUpdateUpdatedQuery(this DirectModel model)
+    {
+      if (model.IntegerPrimary && !model.ID.HasValue)
+        throw new Exception("ID is not set, maybe this table was not loaded");
+
+      model.OnBeforeUpdate();
+      
+      // UPDATE MobilePaywall.core.A SET A=1 WHERE AID=1
+
+      string updatedPropName = string.Empty;
+      foreach (var prop in model.Snapshot.PropertySignatures)
+        if (prop.Name.ToLower().Equals("updated"))
+          updatedPropName = prop.Name;
+
+      if (string.IsNullOrEmpty(updatedPropName))
+        return string.Empty;
+
+      string command = string.Format("UPDATE {0}.{1}{2} SET {3}={4} WHERE {5}={6};",
+        model.GetDatabase().DatabaseName, model.GetDatabase().DatabaseSchemeString, model.GetTableName(),
+        updatedPropName, model.Database.ConstructDateTimeParam(DateTime.Now),
+        model.GetIdNameValue(),
         (model.IntegerPrimary ? model.ID.Value.ToString() : string.Format("'{0}'", model.GetStringID())));
 
       return command;

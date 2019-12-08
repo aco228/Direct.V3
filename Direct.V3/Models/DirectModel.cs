@@ -202,27 +202,64 @@ namespace Direct.Models
     /// UPDATE
     /// 
 
-    public void Update(DirectDatabaseBase db = null)
+    public void Update(bool forceUpdateIfNothingIsChanged = true, DirectDatabaseBase db = null)
     {
+      if (forceUpdateIfNothingIsChanged == false && this.Snapshot.GetAffected().Count == 0)
+      {
+        var updated = this.Snapshot.GetProperty("updated");
+        if(updated != null)
+        {
+          updated.SetValue(this, DateTime.Now);
+          this.GetDatabase(db).Execute(this.ConstructUpdateUpdatedQuery());
+        }
+        return;
+      }
+
       foreach (var action in OnAfterUpdateActions)
         action?.Invoke(this);
 
       this.GetDatabase(db).Update(this);
     }
-    public void UpdateLater()
+    public void UpdateLater(bool forceUpdateIfNothingIsChanged = true)
     {
+      if (forceUpdateIfNothingIsChanged == false && this.Snapshot.GetAffected().Count == 0)
+      {
+        var updated = this.Snapshot.GetProperty("updated");
+        if (updated != null)
+        {
+          updated.SetValue(this, DateTime.Now);
+          this.GetDatabase().TransactionalManager.Add(this.ConstructUpdateUpdatedQuery());
+        }
+        return;
+      }
+
+      if (forceUpdateIfNothingIsChanged == false && this.Snapshot.GetAffected().Count == 0)
+        return;
+
       foreach (var action in OnAfterUpdateActions)
         action?.Invoke(this);
 
       this.GetDatabase().TransactionalManager.Add(this);
     }
-    public async Task<int?> UpdateAsync(DirectDatabaseBase db = null)
+    public async Task<int?> UpdateAsync(bool forceUpdateIfNothingIsChanged = true, DirectDatabaseBase db = null)
     {
+      if (forceUpdateIfNothingIsChanged == false && this.Snapshot.GetAffected().Count == 0)
+      {
+        var updated = this.Snapshot.GetProperty("updated");
+        if (updated != null)
+        {
+          updated.SetValue(this, DateTime.Now);
+          await this.GetDatabase(db).ExecuteAsync(this.ConstructUpdateUpdatedQuery());
+        }
+        return 0;
+      }
+
       foreach (var action in OnAfterUpdateActions)
         action?.Invoke(this);
 
       return await this.GetDatabase(db).UpdateAsync(this);
     }
+
 
     /// 
     /// DELETE

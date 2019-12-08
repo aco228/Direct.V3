@@ -256,6 +256,9 @@ namespace Direct
     {
       try
       {
+        if (string.IsNullOrEmpty(command))
+          throw new Exception("empty query");
+
         if (command.ToLower().StartsWith("insert into"))
           return new DirectExecuteResult()
           {
@@ -290,9 +293,11 @@ namespace Direct
     public virtual Task<DirectExecuteResult> ExecuteAsync(DbConnection connection, string query, params object[] parameters) => this.ExecuteAsync(connection, this.Database.Construct(query, parameters));
     public async Task<DirectExecuteResult> ExecuteAsync(DbConnection connection, string command)
     {
-
       try
       {
+        if (string.IsNullOrEmpty(command))
+          throw new Exception("empty query");
+
         if (command.ToLower().StartsWith("insert into"))
           return new DirectExecuteResult()
           {

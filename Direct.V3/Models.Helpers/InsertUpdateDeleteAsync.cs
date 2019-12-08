@@ -36,7 +36,7 @@ namespace Direct
     {
       if (model.IntegerPrimary && !model.ID.HasValue)
         throw new Exception("ID is not set, maybe this table was not loaded");
-
+      
       // UPDATE MobilePaywall.core.A SET A=1 WHERE AID=1
       string command = string.Format("UPDATE {0}.{1}{2} SET {3} WHERE {4}={5};",
         db.DatabaseName, db.DatabaseSchemeString, model.GetTableName(),
