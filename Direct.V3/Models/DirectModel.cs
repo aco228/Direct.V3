@@ -202,7 +202,7 @@ namespace Direct.Models
     /// UPDATE
     /// 
 
-    public void Update(bool forceUpdateIfNothingIsChanged = true, DirectDatabaseBase db = null)
+    public void Update(bool forceUpdateIfNothingIsChanged = false, DirectDatabaseBase db = null)
     {
       if (forceUpdateIfNothingIsChanged == false && this.Snapshot.GetAffected().Count == 0)
       {
@@ -220,7 +220,7 @@ namespace Direct.Models
 
       this.GetDatabase(db).Update(this);
     }
-    public void UpdateLater(bool forceUpdateIfNothingIsChanged = true)
+    public void UpdateLater(bool forceUpdateIfNothingIsChanged = false)
     {
       if (forceUpdateIfNothingIsChanged == false && this.Snapshot.GetAffected().Count == 0)
       {
@@ -241,7 +241,7 @@ namespace Direct.Models
 
       this.GetDatabase().TransactionalManager.Add(this);
     }
-    public async Task<int?> UpdateAsync(bool forceUpdateIfNothingIsChanged = true, DirectDatabaseBase db = null)
+    public async Task<int?> UpdateAsync(bool forceUpdateIfNothingIsChanged = false, DirectDatabaseBase db = null)
     {
       if (forceUpdateIfNothingIsChanged == false && this.Snapshot.GetAffected().Count == 0)
       {
