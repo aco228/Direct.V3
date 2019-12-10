@@ -24,7 +24,7 @@ namespace Direct
     {
       get
       {
-        if (this.DirectRows != null || i < 0 || i > this.DirectRows.Count)
+        if (this.DirectRows == null || i < 0 || i > this.DirectRows.Count)
           return null;
         return this.DirectRows[i];
       }
