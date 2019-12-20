@@ -97,6 +97,7 @@ namespace Direct.Types.Mysql
           result = "bool";
           break;
         case "binary":
+        case "varbinary":
           result = "byte[]";
           return result;
           break;
