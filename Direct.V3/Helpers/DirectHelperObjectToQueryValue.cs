@@ -59,8 +59,8 @@ namespace Direct
         bool hasAllZeroes = data.All(singleByte => singleByte == 0);
         if (hasAllZeroes)
           return "NULL";
-        string hex = "";
-        data.ToList().ForEach(b => hex += b.ToString("x2"));
+        string hex = StringToHex.ToHexString(data, false);
+        //data.ToList().ForEach(b => hex += b.ToString("x2"));
         return string.Format("X'{0}'", hex);
       }
       else if (type == typeof(DateTime) || type == typeof(DateTime?))

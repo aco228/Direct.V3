@@ -219,6 +219,7 @@ namespace Direct.Models
       for (int i = 0; i < this.PropertySignatures.Count; i++)
       {
         if (this.PropertySignatures[i].NotUpdatable) continue;
+
         this.SnapshotObjects.Add(this.PropertySignatures[i].Name, this.GetSqlValue(i, throwNullableException: false));
       }
     }

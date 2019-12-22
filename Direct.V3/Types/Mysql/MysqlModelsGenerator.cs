@@ -98,6 +98,7 @@ namespace Direct.Types.Mysql
           break;
         case "binary":
         case "varbinary":
+        case "mediumblob":
           result = "byte[]";
           return result;
           break;
