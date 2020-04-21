@@ -9,6 +9,22 @@ namespace Direct
   public static partial class DirectModelHelper
   {
 
+    private static DirectDatabaseBase GetDatabase(DirectModel model)
+    {
+      if (model.GetDatabase() != null)
+        return model.GetDatabase();
+
+      switch (model.DatabaseType)
+      {
+        case DirectDatabaseType.MySQL:
+          return new Direct.Types.Mysql.DirectDatabaseMysql(string.Empty, string.Empty);
+        case DirectDatabaseType.SQLite:
+          return new Direct.Types.SQLite.DirectDatabaseSqlLite(string.Empty, string.Empty);
+        default:
+          return null;
+      }
+    }
+
     public static void InsertOrUpdate(this DirectDatabaseBase db, DirectModel model)
     {
       //if (model.LongID.HasValue)
@@ -26,7 +42,7 @@ namespace Direct
     internal static string ConstructInsertQuery(this DirectModel model)
     {
       model.OnBeforeInsert();
-      string command = string.Format("INSERT INTO {0}.{1}{2} ({3}) VALUES ({4});",
+      string command = string.Format(DirectModelHelper.GetDatabase(model).QueryConstructInsertQuery,
         model.GetDatabase().DatabaseName, model.GetDatabase().DatabaseSchemeString, model.GetTableName(),
         model.Snapshot.GetPropertyNamesForInsert(), model.Snapshot.GetPropertyValuesForInsert());
       return command;
@@ -57,7 +73,7 @@ namespace Direct
         return string.Empty;
 
       // UPDATE MobilePaywall.core.A SET A=1 WHERE AID=1
-      string command = string.Format("UPDATE {0}.{1}{2} SET {3} WHERE {4}={5};",
+      string command = string.Format(DirectModelHelper.GetDatabase(model).QueryConstructUpdateQuery,
         model.GetDatabase().DatabaseName, model.GetDatabase().DatabaseSchemeString, model.GetTableName(),
         model.Snapshot.GetUpdateData(),
         model.GetIdNameValue(),
@@ -83,7 +99,7 @@ namespace Direct
       if (string.IsNullOrEmpty(updatedPropName))
         return string.Empty;
 
-      string command = string.Format("UPDATE {0}.{1}{2} SET {3}={4} WHERE {5}={6};",
+      string command = string.Format(DirectModelHelper.GetDatabase(model).QueryConstructUpdateUpdatedQuery,
         model.GetDatabase().DatabaseName, model.GetDatabase().DatabaseSchemeString, model.GetTableName(),
         updatedPropName, model.Database.ConstructDateTimeParam(DateTime.Now),
         model.GetIdNameValue(),
@@ -115,7 +131,7 @@ namespace Direct
         throw new Exception("THIS model has not ID");
 
       model.OnBeforeDelete();
-      string command = string.Format("DELETE FROM {0}.{1}{2} WHERE {3}={4};",
+      string command = string.Format(DirectModelHelper.GetDatabase(model).QueryDelete,
         db.DatabaseName, db.DatabaseSchemeString, model.GetTableName(),
         model.GetIdNameValue(),
         (model.IntegerPrimary ? model.ID.Value.ToString() : string.Format("'{0}'", model.GetStringID())));

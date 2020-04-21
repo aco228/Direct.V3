@@ -164,7 +164,14 @@ namespace Direct
     {
       command = this.Database.PrepareQuery(command);
       foreach (var row in connection.Query<T>(command))
+      {
+        //if(row.GetType() == typeof(Direct.Models.DirectModel))
+        //{
+        //  (row as Direct.Models.DirectModel).Database = Database;
+        //}
+
         yield return row;
+      }
       yield break;
     }
 

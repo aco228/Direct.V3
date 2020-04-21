@@ -22,7 +22,7 @@ namespace Direct
 
     public static async Task<T> LoadAsync<T>(this DirectQueryLoader<T> loader, int id) where T : DirectModel
     {
-      string command = string.Format("SELECT {0} FROM [].{1} WHERE {2}={3};",
+      string command = string.Format(loader.Database.QueryContructLoadByID,
         loader.SelectQuery,
         loader.Instance.GetTableName(),
         loader.Instance.GetIdNameValue(), id);
@@ -38,7 +38,7 @@ namespace Direct
 
     public static async Task<T> LoadByGuidAsync<T>(this DirectQueryLoader<T> loader, string id) where T : DirectModel
     {
-      string command = string.Format("SELECT {0} FROM [].{1} WHERE {2}='{3}';",
+      string command = string.Format(loader.Database.QueryContructLoadByStringID,
         loader.SelectQuery,
         loader.Instance.GetTableName(),
         loader.Instance.GetIdNameValue(), id);
@@ -65,7 +65,7 @@ namespace Direct
 
     public static async Task<List<T>> LoadAsync<T>(this DirectQueryLoader<T> loader) where T : DirectModel
     {
-      string command = string.Format("SELECT {0} FROM [].{1} {2} {3}",
+      string command = string.Format(loader.Database.QueryContructLoad,
         loader.SelectQuery,
         loader.Instance.TableName,
         loader.WhereQuery,
@@ -90,7 +90,7 @@ namespace Direct
     /// <returns></returns>
     public static async Task<T> LoadSingleAsync<T>(this DirectQueryLoader<T> loader) where T : DirectModel
     {
-      string command = string.Format("SELECT {0} FROM [].{1} {2} LIMIT 1",
+      string command = string.Format(loader.Database.QueryLoadSingle,
         loader.SelectQuery,
         loader.Instance.TableName,
         loader.WhereQuery);
@@ -113,7 +113,7 @@ namespace Direct
     /// <returns></returns>
     public static async Task<dynamic> LoadDynamicAsync<T>(this DirectQueryLoader<T> loader) where T : DirectModel
     {
-      string command = string.Format("SELECT {0} FROM [].{1} {2} {3}",
+      string command = string.Format(loader.Database.QueryContructLoad,
         loader.SelectQuery,
         loader.Instance.TableName,
         loader.WhereQuery,

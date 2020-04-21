@@ -92,8 +92,7 @@ namespace Direct.Models
 
     internal string GetSqlValue(int propertyID, bool throwNullableException)
     {
-
-      if (this.PropertySignatures[propertyID].UpdateDateTime)
+      if (this.PropertySignatures[propertyID].UpdateDateTime && Model.GetDatabase() != null)
         return Model.GetDatabase().CurrentDateQueryString;
 
       string value = this.GetValue(this.PropertySignatures[propertyID]);

@@ -11,6 +11,7 @@ namespace Direct.Models
   [Serializable()]
   public abstract class DirectModel : IDisposable
   {
+
     internal string InternalID { get; private set; } = string.Empty;
     internal DirectModelSnapshot Snapshot { get; set; } = null;
     internal string IdName { get; set; } = string.Empty;
@@ -18,15 +19,25 @@ namespace Direct.Models
     internal string BulkVariableName => string.Format("{0}_{1}", this.IdName, this.InternalID);
     internal DirectDatabaseBase Database { get; set; } = null;
     internal bool IntegerPrimary { get; set; } = true;
+    private DirectDatabaseType _databaseType;
+    internal DirectDatabaseType DatabaseType { get => this.GetDatabase() != null ? this.GetDatabase().DatabaseType : this._databaseType; }
+
 
 
     public int? ID
     {
       get
       {
-        if (!this.IntegerPrimary) return null;
-        int? result = (int?)this.Snapshot.IdPropertyInfo.GetValue(this);
-        return result.HasValue && result.Value == 0 ? null : result;
+        try
+        {
+          if (!this.IntegerPrimary) return null;
+          int? result = (int?)this.Snapshot.IdPropertyInfo.GetValue(this);
+          return result.HasValue && result.Value == 0 ? null : result;
+        }
+        catch(Exception e)
+        {
+          return null;
+        }
       }
       set
       {
@@ -62,11 +73,12 @@ namespace Direct.Models
     /// CONSTRUCTOR && DECONSTRUCTOR
     ///
 
-    public DirectModel(string tableName, string id_name, DirectDatabaseBase db)
+    public DirectModel(string tableName, string id_name, DirectDatabaseBase db, DirectDatabaseType type = DirectDatabaseType.MySQL)
     {
       this.TableName = tableName;
       this.IdName = id_name;
       this.Database = db;
+      this._databaseType = type;
       this.InternalID = this.ConstructSignature() + Guid.NewGuid().ToString().Replace("-", string.Empty);
 
       this.Snapshot = new DirectModelSnapshot(this);

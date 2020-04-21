@@ -13,7 +13,7 @@ namespace Direct.Models
     public string PropertyName { get; set; } = string.Empty;
 
     public string Name { get => string.IsNullOrEmpty(this.AttributeName) ? this.PropertyName : this.AttributeName; }
-    public bool UpdateDateTime = true;
+    public bool UpdateDateTime = false;
     public bool IsPrimary { get; set; } = false;
     public bool Nullable = false;
 

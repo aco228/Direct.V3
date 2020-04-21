@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace Direct
 {
   public enum DirectDatabaseExceptionType { OnEnumerable, OnLoad, OnLoadAsync, OnExecute, OnExecuteAsync }
+  public enum DirectDatabaseType { MySQL, SQLite, SQLServer }
   public abstract partial class DirectDatabaseBase : IDisposable
   {
     public string DatabaseName { get; protected set; } = string.Empty;
@@ -22,6 +23,7 @@ namespace Direct
     /// ABSTRACTION
     ///
 
+    public abstract DirectDatabaseType DatabaseType { get; }
     public abstract string CurrentDateQueryString { get; }
     public abstract string QueryScopeID { get; }
     public abstract string SelectTopOne { get; }
@@ -32,6 +34,20 @@ namespace Direct
     public abstract string ConstructDateTimeParam(DateTime dt);
     protected abstract string OnBeforeCommandOverride(string command);
 
+
+    ///
+    /// QUERY CONSTRUCTION
+    ///
+
+    internal virtual string QueryContructLoadByID { get => "SELECT {0} FROM [].{1} WHERE {2}={3};"; }
+    internal virtual string QueryLoadSingle { get => "SELECT {0} FROM [].{1} {2} LIMIT 1"; }
+    internal virtual string QueryContructLoadByStringID { get => "SELECT {0} FROM [].{1} WHERE {2}='{3}';"; }
+    internal virtual string QueryContructLoad { get => "SELECT {0} FROM [].{1} {2} {3}"; }
+
+    internal virtual string QueryConstructInsertQuery { get => "INSERT INTO {0}.{1}{2} ({3}) VALUES ({4});"; }
+    internal virtual string QueryConstructUpdateQuery { get => "UPDATE {0}.{1}{2} SET {3} WHERE {4}={5};"; }
+    internal virtual string QueryConstructUpdateUpdatedQuery { get => "UPDATE {0}.{1}{2} SET {3}={4} WHERE {5}={6};"; }
+    internal virtual string QueryDelete { get => "DELETE FROM {0}.{1}{2} WHERE {3}={4};"; }
 
     ///
     /// CONSTRUCTORS

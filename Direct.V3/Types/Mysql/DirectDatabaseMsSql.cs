@@ -17,6 +17,7 @@ namespace Direct.Types.Mysql
     public override string CurrentDateQueryString => "CURRENT_TIMESTAMP";
     public override string QueryScopeID => "LAST_INSERT_ID()";
     public override string SelectTopOne => "SELECT * FROM [].{0} LIMIT 1";
+    public override DirectDatabaseType DatabaseType => DirectDatabaseType.MySQL;
     //public override DirectModelGeneratorBase ModelsCreator => new MysqlModelsGenerator(this);
     public override string ConstructVariable(string name) => string.Format("SET @{0} :=", name);
     public override void OnException(DirectDatabaseExceptionType type, string query, Exception e) { }

@@ -49,7 +49,7 @@ namespace Direct
 
     internal static string ContructLoadByID<T>(this DirectQueryLoader<T> loader, long id) where T : DirectModel
     {
-      return string.Format("SELECT {0} FROM [].{1} WHERE {2}={3};",
+      return string.Format(loader.Database.QueryContructLoadByID,
         loader.SelectQuery,
         loader.Instance.GetTableName(),
         loader.Instance.GetIdNameValue(), id);
@@ -68,7 +68,7 @@ namespace Direct
 
     public static T LoadSingle<T>(this DirectQueryLoader<T> loader) where T : DirectModel
     {
-      string command = string.Format("SELECT {0} FROM [].{1} {2} LIMIT 1",
+      string command = string.Format(loader.Database.QueryLoadSingle,
         loader.SelectQuery,
         loader.Instance.TableName,
         loader.WhereQuery);
@@ -88,7 +88,7 @@ namespace Direct
 
     internal static string ContructLoadByStringID<T>(this DirectQueryLoader<T> loader, string id) where T : DirectModel
     {
-      return string.Format("SELECT {0} FROM [].{1} WHERE {2}='{3}';",
+      return string.Format(loader.Database.QueryContructLoadByStringID,
         loader.SelectQuery,
         loader.Instance.GetTableName(),
         loader.Instance.GetIdNameValue(), id);
@@ -111,7 +111,7 @@ namespace Direct
 
     internal static string ContructLoad<T>(this DirectQueryLoader<T> loader) where T : DirectModel
     {
-      return string.Format("SELECT {0} FROM [].{1} {2} {3}",
+      return string.Format(loader.Database.QueryContructLoad,
         loader.SelectQuery,
         loader.Instance.TableName,
         loader.WhereQuery,
